@@ -1,0 +1,54 @@
+# Update repo
+sudo add-apt-repository ppa:webupd8team/java -y
+sudo apt-add-repository ppa:georepublic/pgrouting-unstable -y
+sudo apt-get update
+
+# Install Java
+sudo apt-get install oracle-java8-installer -y
+
+# Install Scala / sbt
+wget https://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/0.13.11/sbt-launch.jar
+sudo mv sbt-launch.jar /bin
+sudo touch /bin/sbt
+sudo chown root:root /bin/sbt
+sudo chmod 755 /bin/sbt
+CMD="#!/bin/bash\necho SBT_OPTS=\"-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M\"\njava $SBT_OPTS -jar /bin/sbt-launch.jar \"\$@\"\n"
+sudo su -c "echo -e '${CMD}' > /bin/sbt"
+
+# Install postgres / apache
+sudo apt-get install postgresql-9.3 postgresql-contrib postgresql-9.3-postgis-2.1 postgresql-9.3-pgrouting osm2pgsql osm2pgrouting apache2 php5 php5-pgsql -y
+
+# Configure apache
+sudo a2enmod headers
+sudo a2enmod rewrite
+sudo service apache2 restart
+# TODO: 	Header // allow..
+#		<Directory /var/www/html>        
+#	        	Options Indexes FollowSymLinks
+#       		AllowOverride all 
+#       		Require all granted
+#  		</Directory>
+
+
+# Setup postgres
+w="whoami"
+me=$(eval $w)
+sudo su -c "createuser $me -s && createdb $me" postgres
+sudo su -c "createuser -s gis" postgres
+sudo su -c "createdb -E UTF8 -O gis gis" postgres
+#sudo su -c "createlang plpgsql gis" postgres
+
+# Setup postgis
+psql -d gis -c "alter user gis with password 'gispass';"
+psql -d gis -c "create extension postgis;"
+psql -d gis -c "create extension postgis_topology;"
+psql -d gis -c "create extension pgrouting;"
+
+# TODO: import osm
+# wget http://osm-extracted-metros.s3.amazonaws.com/sydney.osm.bz2
+# bzip2 -d -k sydney.osm.bz2
+# osm2pgrouting -f australia.osm -d gis -u gis --passwd ******
+# select pgr_createTopology('public.ways'::text, 0.0000001::float, 'the_geom', 'gid')
+# CREATE INDEX ways_source_idx ON ways("source");
+# CREATE INDEX ways_target_idx ON ways("target");
+# CREATE FUNCTION (listed in db folder)

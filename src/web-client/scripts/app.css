@@ -1,0 +1,10 @@
+/* Inverting the map so we can see lines better.  
+ * OSM colors make overlay very unreadable.
+ */
+#map {
+  background: #220022;
+}
+.hidden {
+  display: none;
+}
+
