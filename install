@@ -16,7 +16,7 @@ CMD="#!/bin/bash\necho SBT_OPTS=\"-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadi
 sudo su -c "echo -e '${CMD}' > /bin/sbt"
 
 # Install postgres / apache
-sudo apt-get install postgresql-9.3 postgresql-contrib postgresql-9.3-postgis-2.1 postgresql-9.3-pgrouting osm2pgsql osm2pgrouting apache2 php5 php5-pgsql -y
+sudo apt-get install postgresql-9.3 postgresql-contrib postgresql-9.3-postgis-2.1 postgresql-9.3-pgrouting osm2pgsql osm2pgrouting apache2 php5 php5-pgsql osmosis -y
 
 # Configure apache
 sudo a2enmod headers
@@ -47,7 +47,8 @@ psql -d gis -c "create extension pgrouting;"
 # TODO: import osm
 # wget http://osm-extracted-metros.s3.amazonaws.com/sydney.osm.bz2
 # bzip2 -d -k sydney.osm.bz2
-# osm2pgrouting -f australia.osm -d gis -u gis --passwd ******
+# osmosis --read-xml sydney.osm --bb left=151.18157386779785 right=151.23290061950684 top=-33.84938971807141 bottom=-33.90226516587721 --write-xml syd_cbd.osm
+# osm2pgrouting -f syd_cbd.osm -d gis -u gis --passwd ******
 # select pgr_createTopology('public.ways'::text, 0.0000001::float, 'the_geom', 'gid')
 # CREATE INDEX ways_source_idx ON ways("source");
 # CREATE INDEX ways_target_idx ON ways("target");
