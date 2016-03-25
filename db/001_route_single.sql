@@ -9,6 +9,7 @@ $BODY$
     declare v2 bigint;
     BEGIN
       -- TODO: Filter on road type.  Starting on motorway leads to no nav result..
+      -- TODO: Needs further refinement (select closest road, then select closest node in that road)
       select w.id into v1 from ways_vertices_pgr w
         order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326))
       limit 1;
