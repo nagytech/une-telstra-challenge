@@ -5,14 +5,14 @@ CREATE OR REPLACE FUNCTION public.route_single(in _x1 float8, in _y1 float8, in 
   RETURNS table (id int, node int, edge int, name text, cost double PRECISION, length_m DOUBLE PRECISION, the_geom GEOMETRY)
 AS
 $BODY$
-    declare way1 bigint;
-    declare way2 bigint;
+    declare v1 bigint;
+    declare v2 bigint;
     BEGIN
-      -- TODO: This needs work.  It ends up giving us the wrong legs.
-      select w.source into way1 from ways w
+      -- TODO: Filter on road type.  Starting on motorway leads to no nav result..
+      select w.id into v1 from ways_vertices_pgr w
         order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326))
       limit 1;
-      select w.source into way2 from ways w
+      select w.id into v2 from ways_vertices_pgr w
         order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326))
       limit 1;
       --raise notice '%,%', way1, way2;
@@ -28,8 +28,9 @@ $BODY$
           left join osm_way_classes c on c.class_id = w.class_id
           -- LIMITATIONS
           where c.name not in (''motorway'',''steps'')',
-          way1, way2, false, false) as d
+          v1, v2, false, false) as d
         left join ways w on d.id2 = w.gid;
     END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
+
