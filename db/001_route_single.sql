@@ -1,6 +1,3 @@
-/* Selects a route between two points (x1y1, x2y2)
- */
-
 CREATE OR REPLACE FUNCTION public.route_single(in _x1 float8, in _y1 float8, in _x2 float8, in _y2 float8)
   RETURNS table (id int, node int, edge int, name text, cost double PRECISION, length_m DOUBLE PRECISION, the_geom GEOMETRY)
 AS
@@ -8,13 +5,23 @@ $BODY$
     declare v1 bigint;
     declare v2 bigint;
     BEGIN
-      -- TODO: Filter on road type.  Starting on motorway leads to no nav result..
-      -- TODO: Needs further refinement (select closest road, then select closest node in that road)
-      select w.id into v1 from ways_vertices_pgr w
-        order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326))
+      select v.id into v1 from ways_vertices_pgr v
+      order by st_distance(v.the_geom,
+                           (select w.the_geom from ways w
+                             left join osm_way_classes c on w.class_id = c.class_id
+                           where c.name not in ('motorway','steps')
+                            order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326)) asc
+                            limit 1)
+      ) asc, st_distance(v.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326)) asc
       limit 1;
-      select w.id into v2 from ways_vertices_pgr w
-        order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326))
+      select v.id into v2 from ways_vertices_pgr v
+      order by st_distance(v.the_geom,
+         (select w.the_geom from ways w
+           left join osm_way_classes c on w.class_id = c.class_id
+         where c.name not in ('motorway','steps')
+          order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326)) asc
+          limit 1)
+      ) asc, st_distance(v.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326)) asc
       limit 1;
       --raise notice '%,%', way1, way2;
       return query
@@ -34,4 +41,5 @@ $BODY$
     END;
 $BODY$
 LANGUAGE plpgsql VOLATILE
+
 
