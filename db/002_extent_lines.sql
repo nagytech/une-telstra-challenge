@@ -1,4 +1,4 @@
-/* 
+/*
  * Finds network lines within the given extent
  *
  * NOTE: x1, y1 needs to be lower left, where x2, y2 is upper right.
@@ -19,8 +19,9 @@ CREATE OR REPLACE FUNCTION public.extent_lines(in _x1 float8, in _y1 float8, in 
       st_astext(w.the_geom) wkt
     FROM ways w
     LEFT JOIN osm_way_classes c on w.class_id = c.class_id
-    where st_within(w.the_geom, extent)
+    where st_intersects(w.the_geom, extent)
     limit 1000;
 end;
 $$
 LANGUAGE plpgsql
+
