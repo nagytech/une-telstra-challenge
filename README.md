@@ -19,16 +19,16 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
 
 ## File Management
 
-├── data
-│   └── sydney.osm.bz2                   OpenStreetMap Data
-├── db                                   DB Functions
-│   └── ...
-├── install                              Installation procedures for new system (Ubuntu 14)
-├── README.md
-└── src
-    ├── twitter-agent                    Agent for monitoring Twitter feeds
-    ├── web-client                       Admin Web UI
-    └── web-server                       Server API
+    ├── data    
+    │   └── sydney.osm.bz2                   OpenStreetMap Data
+    ├── db                                   DB Functions
+    │   └── ...
+    ├── install                              Installation procedures for new system (Ubuntu 14)
+    ├── README.md
+    └── src
+        ├── twitter-agent                    Agent for monitoring Twitter feeds
+        ├── web-client                       Admin Web UI
+        └── web-server                       Server API
 
 ## Notes
 
