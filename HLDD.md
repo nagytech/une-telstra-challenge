@@ -61,6 +61,7 @@ components to be discussed can classified as follows:
 - OAuth Server (or session state server TBD)
 - API
 - Batch Loader
+- Actors
 
 ### 3.2   Presentation Layer
 
@@ -147,9 +148,20 @@ The API should provide the following functions (and more! TBD):
 
 #### 3.4.3  Batch Loader
 
+Integration with third-party data that is static, or valid for long periods of
+time.
+
 JN: Probably something we can avoid building, but it would be good to at least
 have a solid plan on how to manage the data.  Perhaps this is one of the areas
 where we need to solve the problem via non-technical means.  Sure, Melbourne is
 good for data - but what about other cities?  What do we do if no one has
 sidewalk data?  OSM will work to an extent, but other than that - what is our
 answer?
+
+#### 3.4.4  Actors
+
+Integration with third-party data that is live (ES/API) based, or refreshed ~1-2
+times a day.
+
+JN: Probably something to be said here about how integration with third party
+data sources (API) can be achieved.
