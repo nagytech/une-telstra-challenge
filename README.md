@@ -1,5 +1,7 @@
 # une-telstra-challenge
 
+[![Build Status](http://jenkins.nagytech.com/buildStatus/icon?job=Telstra University Challenge - UNE)](http://jenkins.nagytech.com/job/Telstra%20University%20Challenge%20-%20UNE/)
+
 ##Telstra University Challenge 2016
 ###Cerebral Palsy Alliance
 
