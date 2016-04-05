@@ -26,6 +26,7 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
     ├── install                              Installation procedures for new system (Ubuntu 14)
     ├── README.md
     └── src
+        ├── mobile-client                    Client app for iOS/Android*
         ├── twitter-agent                    Agent for monitoring Twitter feeds
         ├── web-client                       Admin Web UI
         └── web-server                       Server API
@@ -35,3 +36,6 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
 - All design is simply work in progress and up for discussion, at this point, just trying to get a demo out there.
 - CORS is enabled for * for the purposes of debugging and developing.  Eventually, we
 should turn that off.
+
+
+* Requires Xamarin Studio, free trial for students: https://www.dreamspark.com/Product/Product.aspx?productid=100
