@@ -1,0 +1,53 @@
+{
+  "dataSources":
+    [{
+      "name":     "Melbourne pedestrian counting system",
+      "tags":     ["density"],
+      "source":    "http://www.pedestrian.melbourne.vic.gov.au/",
+      "comments": [
+        "Lags behind by several hours to a day.",
+        "Good for retrospective analysis, possibly prediction.",
+        "Maybe real time can be granted?"
+      ]
+    },{
+      "name":     "Transport NSW Crash Statistics",
+      "tags":     ["density","safety","traffic"],
+      "source":   "http://roadsafety.transport.nsw.gov.au/statistics/interactivecrashstats/nsw.html?tabnsw=4",
+      "comments": [
+        "Might have issues gathering and processing such temporally rich data"
+      ]
+    },{
+      "name":     "Social Media"
+    },{
+      "name":     "Public Events Calendars"
+    },{
+      "name":     "Strava",
+      "tags":     ["density","pathways"],
+      "source":   "http://metro.strava.com/",
+      "comments": [
+        "possibly expensive",
+        "demo available, but they are not responding to my emails"
+      ]
+    },{
+      "name":     "City of Melbourne Data",
+      "tags":     ["pathways","accessibility"],
+      "source":   "https://data.melbourne.vic.gov.au/data?category=&style=maps",
+      "comments": [
+        "good sidewalk data, but it's non-linear and will need to be processed along with other data"
+      ]
+    },{
+      "name":     "Accessible Parking Sydney",
+      "tags":     ["accessibility"],
+      "source":   "http://www.cityofsydney.nsw.gov.au/explore/getting-around/parking/accessible-parking-locations",
+      "comments":  [
+        "would need to find the actual data and licensing terms."
+      ]
+    }],
+  "otherLinks":
+    [
+      "http://www.sydneynewyearseve.com/accessibility/",
+      "http://www.cityofsydney.nsw.gov.au/__data/assets/pdf_file/0011/123131/City-of-Sydney-Access-Map.pdf",
+      "http://www.sydneyforall.com/SydneyOperaHouse.html",
+      "http://www.easyaccessaustralia.com.au/"
+    ]
+}

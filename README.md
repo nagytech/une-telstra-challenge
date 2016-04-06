@@ -24,6 +24,7 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
     ├── data    
     │   └── sydney.osm.bz2                   OpenStreetMap Data
     ├── db                                   DB Functions
+    ├── doc                                  Documentation
     │   └── ...
     ├── install                              Installation procedures for new system (Ubuntu 14)
     ├── README.md
