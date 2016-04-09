@@ -121,9 +121,84 @@ very touchy and difficult to set up.
 JN: For discussion?  Depends on if, and who is doing the Admin / Social aspect
 of the App
 
-#### 3.3.1  Database Design
+#### 3.3.1  Database Design and Modelling
 
-TBD
+The database is separated into the following components:
+
+- Core routable data
+- Congestion model
+- TODO: Users, OAuth, Third-Party integration
+
+##### 3.3.1.1   Core Routable Data
+
+The core routable data consists of spatial information about traversable network
+infrastructure within a designated urban area.  Each network component is broken
+down into single segments and represented in the following format:
+
+    create table network
+    (
+        gid serial primary key not null,
+        entitytype integer not null,
+        entityid integer not null,
+        name text,
+        geom geometry not null,
+        length double precision,
+        source int,
+        target int
+    );
+
+    create table networktype
+    (
+      gid serial primary key not null,
+      entitytypeid int not null,
+      name text not null,
+      cost double precision not null
+    );
+
+Navigating the network, without consideration of congestion is a function of
+network.length * networktype.cost where cost is a representation of how
+difficult the network entity is to traverse.  A larger cost value indicates a
+more difficult network segment.
+
+##### 3.3.1.2   Congestion Model
+
+The congestion model is a series of relationships which represent network
+entities that are under some level of 'temporary stress'.  These stressors
+make the traversal more difficult, and thus add to the overall cost.  The
+congestion model is currently represented as follows:
+
+    create unique index congestiontype_congestiontypeid_uindex ON public.congestiontype (congestiontypeid);
+    create unique index congestiontype_name_uindex ON public.congestiontype (name);
+
+    create table congestion
+    (
+      gid serial primary key not null,
+      congestiontypeid integer not null,
+      name text not null,
+      startOn timestamp not null,
+      endOn timestamp,
+      address text null,
+      geometry geometry not null
+    )
+    create table congestiontype
+    (
+      gid serial primary key not null,
+      congestiontypeid integer not null,
+      name text not null,
+      cost double precision not null
+    )
+
+The relationship between network and congestion is represented then as follows:
+
+    create table networkcongestion
+    (
+      gid serial primary key not null,
+      congestionid int not null,
+      networkid int not null
+    );
+
+Note: The database will establish and maintain the linkage between network and
+congestion through the create_congestion function.
 
 ### 3.4   Business Logic
 
@@ -135,16 +210,44 @@ set up, but would need HTTPS in the foreseeable future.
 
 #### 3.4.2  API
 
-The API should provide the following functions (and more! TBD):
+The API should provide the following functions:
+
+    /**
+     Client:
+     Used by the mobile client for the purposes of routing or map display
+     **/
+    GET     /route          req:{from:{x,y},to:{x,y}}, res:{route[]}
+
+    GET     /lines          req:{x1,y1,x2,y2}, res:{network[]}
+
+
+    /**
+      Congestion:
+      Usable by third-party, or actor based batch loader.
+      **/
+    GET     /congest/new    req:{type,start,end,wkt},res:{}
+
+    GET     /congest/edit   req:{id, congestion:{type,start,end,wkt}}, res:{}  
+
+    GET     /congest/list   req:{x1,y1,x2,y2}, res:{congestion[]}
+
+
+    // TODO: other stuff
 
     POST    /login          req:{user, password, deviceid}, res:{token,profile}
-    GET     /route          req:{from:{x,y},to:{x,y}}, res:{route[]}
-    // AT minimum, we really only need
+
     GET     /places         req:{filter:{type,x,y,radius}}, res:{place[]}
+
     POST    /group/new      req:{name,config}, res:{groupid}
+
     GET     /group/:id      req:{}, res:{user[], location[], waypoint[]}
+
     POST    /group/:id/join req:{}, res:{}
+
     WS      /group/:id/msg  req:{message}, res:{message}
+
+Note: not all APIs are relevant for the mobile client, some are for third-party
+integration or administration.
 
 #### 3.4.3  Batch Loader
 

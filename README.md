@@ -21,7 +21,9 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
 
 ## File Management
 
+│   ├── build.sh                             Build file used in deployment
     ├── data    
+    │   └── melb.zip                         Melbourne street corridor and pathway data (processed)
     │   └── sydney.osm.bz2                   OpenStreetMap Data
     ├── db                                   DB Functions
     ├── doc                                  Documentation
@@ -37,8 +39,7 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
 ## Notes
 
 - All design is simply work in progress and up for discussion, at this point, just trying to get a demo out there.
-- CORS is enabled for * for the purposes of debugging and developing.  Eventually, we
-should turn that off.
+- CORS is enabled for * for the purposes of debugging and developing (ot at least it was at some point...).  Eventually, we should turn that off.
 
 
 * Requires Xamarin Studio, free trial for students: https://www.dreamspark.com/Product/Product.aspx?productid=100
