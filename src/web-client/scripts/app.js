@@ -17,12 +17,13 @@ var clear = function(l) {
 
 /* Form management */
 var clearForm = function() {
-    ['osm_id', 'name', 'type'].forEach(function(n) {
+    drawSource.clear();
+    ['type', 'start', 'end', 'wkt'].forEach(function(n) {
         $('[name=' + n + ']').val('');
     });
 }
 var hideForm = function() {
-    $('#editor').hide();
+    $('#congest').hide();
 }
 var loadForm = function(feat) {
     var obj = feat.obj;
@@ -30,20 +31,40 @@ var loadForm = function(feat) {
     $('[name=type]').val(obj.name);
     $('[name=length_m]').val(parseFloat(obj.length_m).toFixed());
 }
+var drawHandle, drawSource;
+var startCongestDraw = function() {
+  function addInteraction() {
+    drawHandle = new ol.interaction.Draw({
+      source: drawSource,
+      type: ('Polygon')
+    });
+    drawHandle.on('drawend', function(e) {
+      var wkt = new ol.format.WKT().writeFeature(e.feature);
+      $('#congest input[name=wkt]').val(wkt);
+      map.removeInteraction(drawHandle);
+      $('#congest').show();
+    });
+    // TODO: Handle cancel.
+    map.addInteraction(drawHandle);
+  }
+  if (drawHandle) map.removeInteraction(drawHandle);
+  addInteraction();
+}
 
 /* Map Mode */
 var mapMode = '';
-var routeSource;
-var clearMapMode = function(mode) {
+var routeSource, drawSource;
+var switchMapMode = function(mode) {
     switch (mode) {
         case 'map-nav':
             $('#console').show();
             hideForm();
             break;
-        case 'map-id':
+        case 'map-congest':
             $('#console').hide();
             $('#console').children().remove();
             routeSource.clear();
+            startCongestDraw();
             break;
         default:
             $('#console').hide();
@@ -59,19 +80,25 @@ $(document).on('ready', function() {
         $('.header-tab').removeClass('is-active');
         $(this).addClass('is-active');
         mapMode = $(this).attr('id');
-        clearMapMode(mapMode);
+        switchMapMode(mapMode);
     });
-    $('#edit-cancel').on('click', function() {
+    $('#congest-cancel').on('click', function() {
         clearForm();
         hideForm();
     });
-    $('#edit-submit').on('click', function() {
-        var osm_id = $('[name=osm_id]').val();
+    $('#congest-submit').on('click', function() {
+        // TODO: Could just serialize the form....
         var type = $('[name=type]').val();
-        $.ajax(urlBase + '/api/line/edit?osm_id=' + osm_id, {
+        var start = $('[name=start]').val();
+        var end = $('[name=end]').val();
+        var wkt = $('[name=wkt]').val();
+        $.ajax(urlBase + '/api/congest/new', {
                 type: 'POST',
                 data: {
-                    'type': type
+                    'type': type,
+                    'start': start,
+                    'end': end,
+                    'wkt': wkt
                 }
             })
             .done(function() {
@@ -205,6 +232,27 @@ layers.getLayer = function(name) {
 };
 
 var init = function() {
+    drawSource = new ol.source.Vector({wrapX: false});
+
+    var drawLayer = new ol.layer.Vector({
+      source: drawSource,
+      style: new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: 'rgba(255, 255, 255, 0.2)'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#ffcc33',
+          width: 2
+        }),
+        image: new ol.style.Circle({
+          radius: 7,
+          fill: new ol.style.Fill({
+            color: '#ffcc33'
+          })
+        })
+      })
+    });
+
     routeSource = new ol.source.Vector({
         projection: proj_int
     });
@@ -250,34 +298,11 @@ var init = function() {
 
     var refreshing = 0;
     map.on('moveend', function() {
-
         var func = map.getView().getResolution() > 4.5 ? clear : render;
         layers.forEach(func);
     });
     var firstClick;
     map.on('singleclick', function(e) {
-        var id = function() {
-            var fls = [];
-
-            // TODO: Highlight selected object
-            map.forEachFeatureAtPixel(e.pixel, function(feature, layer) {
-                fls.push([layer, feature]);
-            });
-
-            // TODO: Don't use an alert, cmon man...
-            if (fls.length > 1) {
-                alert("too many objects selected, try to click just one");
-                return;
-            }
-            if (fls.length == 0) {
-                alert("no objects found");
-                return;
-            }
-
-            clearForm();
-            $('#editor').show();
-            loadForm(fls[0][1]);
-        };
         var nav = function() {
             if (!firstClick) {
                 routeSource.clear();
@@ -348,7 +373,7 @@ var init = function() {
         };
 
         if (mapMode == 'map-nav') nav();
-        else if (mapMode == 'map-id') id();
+        else if (mapMode == 'map-congest-draw') congest();
 
     })
 
@@ -357,5 +382,6 @@ var init = function() {
         l.render();
     });
     map.addLayer(routeLayer);
+    map.addLayer(drawLayer)
 
 };

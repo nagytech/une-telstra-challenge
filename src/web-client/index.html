@@ -37,6 +37,7 @@
       <div class="header-left">
         <a class="header-tab is-active" href="#" id="map-view">View</a>
         <a class="header-tab" href="#" id="map-nav">Navigate</a>
+        <a class="header-tab" href="#" id="map-congest">Add Congestion</a>
       </div>
     </div>
   </nav>
@@ -44,6 +45,43 @@
     <div class="container">
       <div class="columns is-gapless">
         <div id="map" class="column is-12">
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="columns is-gapless">
+        <div id="console" class="column is-12 is-left">
+        </div>
+        <div id="congest" class="column is-12 is-left hidden">
+          <input type="hidden" name="wkt" value="POINT EMPTY" />
+          <p class="control">
+            <label class="label">Type</label>
+            <span class="select">
+              <select name="type">
+                <option value="construction">Construction</option>
+                <option value="emergency">Emergency</option>
+                <option value="major-event">Major Event</option>
+                <!-- TODO: GET these from the API -->
+                <!-- TODO: pages for managing the types, costs, etc. -->
+              </select>
+            </span>
+          </p>
+          <p class="control">
+            <!-- TODO: Autofill with current date time -->
+            <label class="label">Start</label>
+            <input class="input" type="date" name="start"></input>
+          </p>
+          <!-- TODO: DEFAULT TO NULL -->
+          <p class="control">
+            <label class="label">End</label>
+            <input class="input" type="date" name="end"></input>
+          </p>
+          <p class="control">
+            <button class="button is-primary" id="congest-submit">Submit</button>
+            <button class="button" id="congest-cancel">Cancel</button>
+          </p>
         </div>
       </div>
     </div>
