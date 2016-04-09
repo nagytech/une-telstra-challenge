@@ -289,9 +289,10 @@ var init = function() {
         ],
         target: 'map',
         view: new ol.View({
-            center: [16832787.99699074, -4011799.8182046097],
-            zoom: 16,
-            maxZoom: 20,
+            center: [16137272.090214774, -4553212.478335404],
+            zoom: 17,
+            minZoom: 17,
+            maxZoom: 22,
             projection: proj_int
         })
     });
