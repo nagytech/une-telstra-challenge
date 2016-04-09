@@ -42,7 +42,7 @@ var startCongestDraw = function() {
       var format = new ol.format.WKT();
       var wkt = format.writeFeature(e.feature);
       var nf = format.readFeature(wkt);
-      nf.getGeometry().transform(proj_ext, proj_int);
+      nf.getGeometry().transform(proj_int, proj_ext);
       wkt = format.writeFeature(nf);
       $('#congest input[name=wkt]').val(wkt);
       map.removeInteraction(drawHandle);
