@@ -1,4 +1,6 @@
-# build file
+#!/bin/bash
+set -e
+
 echo 'Purging web-server and web-client'
 rm -rf /var/www/html/*.*
 
