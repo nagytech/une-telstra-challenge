@@ -26,8 +26,9 @@ $BODY$
            n.source,
            n.target,
            -- TODO: need to group / product here where multiple congestions affect the same entity....
-           n.length * coalesce(ct.cost, 1) as cost -- big is heavy
+           n.length * coalesce(nt.cost, 1) * coalesce(ct.cost, 1) as cost -- big is heavy
           FROM network n
+          left join networktype nt on n.gid = nt.networkid
           LEFT OUTER JOIN networkcongestion nc on n.gid = nc.networkid
           left join congestion c on c.gid = nc.congestionid
           left join congestiontype ct on c.congestiontypeid = ct.congestiontypeid

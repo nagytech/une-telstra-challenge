@@ -1,3 +1,23 @@
+
+/** DOWN **/
+
+alter table network drop constraint network_networktype_entitytypeid_fk;
+delete from networktype;
+alter table congestion drop constraint congestion_congestiontype_congestiontypeid_fk;
+alter table networkcongestion drop CONSTRAINT  networkcongestion_network_networkid;
+
+delete from network;
+delete from networkcongestion;
+
+drop table network;
+drop table networktype;
+drop table congestion;
+drop table congestionsource;
+drop table congestiontype;
+drop table networkcongestion;
+
+/** UP **/
+
 create table networktype
 (
   gid serial primary key not null,
@@ -30,7 +50,7 @@ create table congestiontype
   cost double precision not null
 )
 create unique index congestiontype_congestiontypeid_uindex ON public.congestiontype (congestiontypeid);
-  create unique index congestiontype_name_uindex ON public.congestiontype (name);
+create unique index congestiontype_name_uindex ON public.congestiontype (name);
 
 create table congestionsource
 (
