@@ -39,7 +39,11 @@ var startCongestDraw = function() {
       type: ('Polygon')
     });
     drawHandle.on('drawend', function(e) {
-      var wkt = new ol.format.WKT().writeFeature(e.feature);
+      var format = new ol.format.WKT();
+      var wkt = format.writeFeature(e.feature);
+      var nf = format.readFeature(wkt);
+      nf.getGeometry().transform(proj_ext, proj_int);
+      wkt = format.writeFeature(nf);
       $('#congest input[name=wkt]').val(wkt);
       map.removeInteraction(drawHandle);
       $('#congest').show();
