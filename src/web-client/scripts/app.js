@@ -240,7 +240,7 @@ var layers = [
               style: function(feature, resolution) {
                   return [new ol.style.Style({
                       stroke: new ol.style.Stroke({
-                          color: '#FFA333'
+                          color: '#FFA333',
                           width: 1 / resolution
                       }),
                       fill: new ol.style.Fill({
@@ -356,25 +356,13 @@ var init = function() {
                 var y2 = point.getCoordinates()[1];
                 $.ajax(urlBase + '/api/route?x1=' + x1 + '&y1=' + y1 + '&x2=' + x2 + '&y2=' + y2)
                     .done(function(json) {
+
                         var format = new ol.format.WKT();
                         var data = JSON.parse(json);
-                        cx.append('<pre>Total Cost:       ' + data.reduce(function(a, b, c) {
-                            return a + parseFloat(b.cost)
-                        }, 0).toFixed(2) + '</pre>');
-                        cx.append('<pre>Total Length (m): ' + data.reduce(function(a, b, c) {
-                            return b.length_m ? (a + parseFloat(b.length_m)) : a
-                        }, 0).toFixed(2) + '</pre>');
-                        cx.append('<pre>Route:\n' + JSON.stringify(data, null, 2) + '</pre>');
 
-                        // TODO: Could minimize effort by not mapping first and last.
-
-                        /*
-
-                        var lastWay = format.readGeometry(data[data.length-2].st_astext).getCoordinates();
-                        var lastPoint = lastWay[lastWay.length-1];
-                        var firstPoint = format.readGeometry(data[0].st_astext).getCoordinates()[0];
-
-                        */
+                        var directions = data.map(function(d) {
+                          console.log(d.name);
+                        });
 
                         var features = data.map(function(d) {
                             try {
@@ -387,18 +375,6 @@ var init = function() {
                                 return;
                             }
                         });
-
-
-                        /*
-                        // TODO: This isn't working as planned, sometimes the initial leg encompasses the start point
-                        //       I think we need to break it down into nodes and then traverse the -ve or +ve direction
-                        var lastLeg = format.readFeature("LINESTRING("+lastPoint[0]+" "+lastPoint[1]+","+x2+" "+y2+")");
-                        var firstLeg = format.readFeature("LINESTRING("+x1+" "+x2+","+firstPoint[0]+" "+firstPoint[1]+")");
-                        lastLeg.getGeometry().transform(proj_int, proj_ext);
-                        firstLeg.getGeometry().transform(proj_int, proj_ext);
-                              features.push(lastLeg);
-                        features.push(firstLeg);
-                        */
 
                         routeSource.addFeatures(features.filter(doOrDont));
                         firstClick = null;
