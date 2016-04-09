@@ -10,7 +10,7 @@ $form=$_GET["format"];
 $db = pg_connect("host=127.0.0.1 dbname=gis user=gis password=gispass")
         or die('no psql found');
 
-$t = 'select * from public.extent_lines($1, $2, $3, $4)';
+$q = 'select * from public.extent_lines($1, $2, $3, $4)';
 
 $r = pg_query_params($db, $q, array($x1, $y1, $x2, $y2)) or die ('bad query: ' . pg_last_error($db));
 

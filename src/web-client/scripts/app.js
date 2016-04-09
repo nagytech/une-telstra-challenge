@@ -191,7 +191,7 @@ var layers = [
             }
         }),
         function(d) {
-            if (!d || !d.name || d.name === "") return;
+            if (!d) return;
             var format = new ol.format.WKT();
             var feature = format.readFeature(d.wkt);
             feature.getGeometry().transform(proj_ext, proj_int);
@@ -320,7 +320,7 @@ var init = function() {
                         var features = data.map(function(d) {
                             try {
                                 var format = new ol.format.WKT();
-                                var feature = format.readFeature(d.st_astext);
+                                var feature = format.readFeature(d.wkt);
                                 feature.getGeometry().transform(proj_ext, proj_int);
                                 feature.obj = d;
                                 return feature;

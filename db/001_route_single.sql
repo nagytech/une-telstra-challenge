@@ -5,41 +5,34 @@ $BODY$
     declare v1 bigint;
     declare v2 bigint;
     BEGIN
-      select v.id into v1 from ways_vertices_pgr v
+      select v.id into v1 from network_vertices_pgr v
       order by st_distance(v.the_geom,
-                           (select w.the_geom from ways w
-                             left join osm_way_classes c on w.class_id = c.class_id
-                           where c.name not in ('motorway','steps')
-                            order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326)) asc
-                            limit 1)
+         (select w.geom from network w
+          order by ST_Distance(w.geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326)) asc
+          limit 1)
       ) asc, st_distance(v.the_geom, st_geomfromtext('point(' || _x1 || ' ' || _y1 || ')', 4326)) asc
       limit 1;
-      select v.id into v2 from ways_vertices_pgr v
+      select v.id into v2 from network_vertices_pgr v
       order by st_distance(v.the_geom,
-         (select w.the_geom from ways w
-           left join osm_way_classes c on w.class_id = c.class_id
-         where c.name not in ('motorway','steps')
-          order by ST_Distance(w.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326)) asc
+         (select w.geom from network w
+          order by ST_Distance(w.geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326)) asc
           limit 1)
       ) asc, st_distance(v.the_geom, st_geomfromtext('point(' || _x2 || ' ' || _y2 || ')', 4326)) asc
       limit 1;
       --raise notice '%,%', way1, way2;
       return query
-        SELECT seq, id1 AS node, id2 AS edge, w.name,  d.cost, w.length_m, w.the_geom FROM pgr_dijkstra('
-          SELECT
-             gid::integer AS id,
-             source::integer,
-             target::integer,
-             -- COSTING
-             length_m::double precision * c.priority AS cost
-          FROM ways w
-          left join osm_way_classes c on c.class_id = w.class_id
-          -- LIMITATIONS
-          where c.name not in (''motorway'',''steps'')',
+        SELECT seq, id1 AS node, id2 AS edge, w.name, d.cost, w.length as length_m, w.geom as the_geom FROM pgr_dijkstra('
+          SELECT n.gid::integer AS id,
+             n.source,
+             n.target,
+             n.length as cost
+            FROM network n',
           v1, v2, false, false) as d
-        left join ways w on d.id2 = w.gid;
+        left join network w on d.id2 = w.gid;
     END;
 $BODY$
-LANGUAGE plpgsql VOLATILE
+LANGUAGE plpgsql VOLATILE;
 
 
+
+-- select * from public.route_single(144.96183693408963, -37.81481447789581, 144.96620357036588,-37.81511960401554)
