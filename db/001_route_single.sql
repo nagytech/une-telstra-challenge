@@ -23,16 +23,19 @@ $BODY$
       return query
         SELECT seq, id1 AS node, id2 AS edge, w.name, d.cost, w.length as length_m, w.geom as the_geom FROM pgr_dijkstra('
           SELECT n.gid::integer AS id,
-             n.source,
-             n.target,
-             n.length as cost
-            FROM network n',
+           n.source,
+           n.target,
+           -- TODO: need to group / product here where multiple congestions affect the same entity....
+           n.length * coalesce(ct.cost, 1) as cost -- big is heavy
+          FROM network n
+          LEFT OUTER JOIN networkcongestion nc on n.gid = nc.networkid
+          left join congestion c on c.gid = nc.congestionid
+          left join congestiontype ct on c.congestiontypeid = ct.congestiontypeid
+          where c.gid is null or now() between c.starton and c.endon',
           v1, v2, false, false) as d
         left join network w on d.id2 = w.gid;
     END;
 $BODY$
 LANGUAGE plpgsql VOLATILE;
-
-
 
 -- select * from public.route_single(144.96183693408963, -37.81481447789581, 144.96620357036588,-37.81511960401554)
