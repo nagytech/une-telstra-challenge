@@ -189,6 +189,7 @@ var layer = {
 
 /* Layers */
 var layers = [
+    /* Lines */
     layer.create(
         'lines', urlBase + '/api/lines.php',
         new ol.source.Vector({
@@ -227,7 +228,35 @@ var layers = [
             var feature = format.readFeature(d.wkt);
             feature.getGeometry().transform(proj_ext, proj_int);
             return feature;
-        })
+        }),
+        /* Congestion */
+        layer.create(
+          'congestion', urlBase + '/api/congest/list.php',
+          new ol.source.Vector({
+              projection: proj_int
+          }),
+          new ol.layer.Vector({
+              maxResolution: 1.5,
+              style: function(feature, resolution) {
+                  return [new ol.style.Style({
+                      stroke: new ol.style.Stroke({
+                          color: '#FFA333'
+                          width: 1 / resolution
+                      }),
+                      fill: new ol.style.Fill({
+                        color: 'rgba(255,100,50,0.5)'
+                      })
+                  })];
+              }
+          }),
+          function(d) {
+              if (!d) return;
+              var format = new ol.format.WKT();
+              var feature = format.readFeature(d.wkt);
+              feature.getGeometry().transform(proj_ext, proj_int);
+              return feature;
+          }
+        )
 ];
 layers.getLayer = function(name) {
     for (var i = 0; i < layers.length; i++) {
