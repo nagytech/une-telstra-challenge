@@ -1,6 +1,8 @@
 #Autosave files
 *~
 
+/Components
+
 #build
 [Oo]bj/
 [Bb]in/

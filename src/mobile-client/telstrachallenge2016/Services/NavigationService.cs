@@ -29,7 +29,7 @@ namespace telstrachallenge2016
 			var page = Resolve<T>();
 			await telstrachallenge2016.App.Current.MainPage.Navigation.PushAsync(page);
 		}
-		AttributeUsageAttribute
+	
 		public void PushToRoot<T>() where T : Page {
 			var page = Resolve<T>();
 			telstrachallenge2016.App.Current.MainPage = new NavigationPage(page);
