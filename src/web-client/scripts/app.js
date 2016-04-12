@@ -1,6 +1,6 @@
 /* Global */
 var map;
-var urlBase = 'http://demo1.nagytech.com';
+var urlBase = 'http://routable.me';
 
 /* Constants - General Utils */
 var proj_int = 'EPSG:3857';
