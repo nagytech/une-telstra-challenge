@@ -1,9 +1,15 @@
 # une-telstra-challenge
 
+Project code for the UNE Telstra Challenge for 2016.  For this project we chose the Cerebral Palsy Alliance to support. Our application consisted of a PHP/PostGIS webservice which provided network routing for accessible routes in the Sydney / Melbourne CBD.
+
+
+
 [![Build Status](http://jenkins.nagytech.com/buildStatus/icon?job=Telstra University Challenge - UNE)](http://jenkins.nagytech.com/job/Telstra%20University%20Challenge%20-%20UNE/)
 
 ##Telstra University Challenge 2016
 ###Cerebral Palsy Alliance
+
+Below is the transcript of the project challenge:
 
 (transcript)
 
@@ -21,7 +27,7 @@ E: We want the most tallented developers to tackle our challenge, so please, jum
 
 ## File Management
 
-│   ├── build.sh                             Build file used in deployment
+    ├── build.sh                             Build file used in deployment
     ├── data    
     │   └── melb.zip                         Melbourne street corridor and pathway data (processed)
     │   └── sydney.osm.bz2                   OpenStreetMap Data
